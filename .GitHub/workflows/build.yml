@@ -1,5 +1,27 @@
-name: Crear APK Onlinron: [push]
-jobs:build:
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
+name: Crear APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descomprimir ZIP
+        run: |
+          unzip -o "*.zip" -d temp
+          mv temp/*/*. 2>/dev/null || mv temp/*. 2>/dev/null
+          rm -rf temp
+          ls -la
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Crear APK
+        run: |
+          chmod +x gradlew
+         ./gradlew assembleDebug
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Educacion-Fisica
+          path: app/build/outputs/apk/debug/*.apk
