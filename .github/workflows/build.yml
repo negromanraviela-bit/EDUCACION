@@ -12,7 +12,7 @@ jobs:
           unzip -o "$ZIP" -d.
           rm -f "$ZIP"
           if [ ! -f "./gradlew" ]; then
-            CARP=$(find. -maxdepth 4 -name "gradlew" | head -n 1 | xargs dirname)
+            CARP=$(find . -maxdepth 4 -name "gradlew" | head -n 1 | xargs dirname)
             echo "Moviendo desde $CARP"
             cp -r $CARP/* .
           fi
