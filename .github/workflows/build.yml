@@ -7,11 +7,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Descomprimir ZIP
         run: |
-          ZIP=$(find. -name "*.zip" | head -n 1)
+          ZIP=$(find . -name "*.zip" | head -n 1)
           echo "ZIP: $ZIP"
-          unzip -o "$ZIP" -d.
+          unzip -o "$ZIP" -d .
           rm -f "$ZIP"
-          CARP=$(find. -type f -name "gradlew" | head -n 1 | xargs dirname)
+          CARP=$(find . -type f -name "gradlew" | head -n 1 | xargs dirname)
           if [ -z "$CARP" ]; then
             CARP="."
           fi
