@@ -11,13 +11,10 @@ jobs:
           echo "ZIP: $ZIP"
           unzip -o "$ZIP" -d .
           rm -f "$ZIP"
-          CARP=$(find . -type f -name "gradlew" | head -n 1 | xargs dirname)
-          if [ -z "$CARP" ]; then
-            CARP="."
-          fi
-          echo "Moviendo desde $CARP"
-          if [ "$CARP" != "." ]; then
-            cp -r $CARP/* .
+          CARP=$(find . -type f -name "gradlew" -print -quit)
+          if [ -n "$CARP" ]; then
+              CARP=$(dirname "$CARP")
+              cp -r "$CARP"/* .
           fi
           ls -la
       - name: Preparar Java
