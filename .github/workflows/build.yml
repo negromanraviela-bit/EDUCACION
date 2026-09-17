@@ -1,0 +1,33 @@
+name: Crear APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descomprimir ZIP
+        run: |
+          ZIP=$(find. -name "*.zip" | head -n 1)
+          echo "ZIP: $ZIP"
+          unzip -o "$ZIP" -d.
+          rm -f "$ZIP"
+          if [! -f "./gradlew" ]; then
+            CARP=$(find. -maxdepth 4 -name "gradlew" | head -n 1 | xargs dirname)
+            echo "Moviendo desde $CARP"
+            cp -r $CARP/*.
+          fi
+          ls -la
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Crear APK
+        run: |
+          chmod +x gradlew
+           ./gradlew assembleDebug
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Educacion-Fisica
+          path: app/build/outputs/apk/debug/*.apk
