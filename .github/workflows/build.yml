@@ -8,13 +8,14 @@ jobs:
 
       - name: Descomprimir ZIP
         run: |
-          ZIP=$(find . -name "*.zip" | head -n 1)
-          echo "ZIP encontrado: $ZIP"
+          echo "Buscando ZIP..."
+          find . -type f -name "*.zip"
+          ZIP=$(find . -type f -name "*.zip" | head -n 1)
+          echo "ZIP: $ZIP"
           if [ -n "$ZIP" ]; then
             unzip -o "$ZIP" -d .
-            rm -f "$ZIP"
           fi
-          ls -R | head -n 100
+          ls -R | head -n 200
 
       - name: Preparar Java
         uses: actions/setup-java@v4
@@ -24,7 +25,16 @@ jobs:
 
       - name: Crear APK
         run: |
+          echo "Buscando gradlew..."
+          find . -type f -name "gradlew"
           F=$(find . -type f -name "gradlew" | head -n 1)
+          echo "Encontrado: $F"
+          if [ -z "$F" ]; then
+            echo "NO se encontro gradlew, mostrando carpetas:"
+            ls -la
+            find . -type d | head -n 50
+            exit 1
+          fi
           R=$(dirname "$F")
           chmod +x "$F"
           cd "$R"
