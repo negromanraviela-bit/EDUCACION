@@ -1,0 +1,37 @@
+name: Crear APK
+"on": [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Descomprimir ZIP
+        run: |
+          ZIP=$(find . -name "*.zip" | head -n 1)
+          echo "ZIP encontrado: $ZIP"
+          if [ -n "$ZIP" ]; then
+            unzip -o "$ZIP" -d .
+            rm -f "$ZIP"
+          fi
+          ls -R | head -n 100
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Crear APK
+        run: |
+          F=$(find . -type f -name "gradlew" | head -n 1)
+          R=$(dirname "$F")
+          chmod +x "$F"
+          cd "$R"
+          ./gradlew assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Educacion-Fisica
+          path: "**/build/outputs/apk/debug/*.apk"
