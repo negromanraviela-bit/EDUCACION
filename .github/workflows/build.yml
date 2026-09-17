@@ -7,14 +7,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Descomprimir ZIP
         run: |
-          ZIP=$(find. -name "*.zip" | head -n 1)
+          ZIP=$(find . -name "*.zip" | head -n 1)
           echo "ZIP: $ZIP"
           unzip -o "$ZIP" -d.
           rm -f "$ZIP"
-          if [! -f "./gradlew" ]; then
+          if [ ! -f "./gradlew" ]; then
             CARP=$(find. -maxdepth 4 -name "gradlew" | head -n 1 | xargs dirname)
             echo "Moviendo desde $CARP"
-            cp -r $CARP/*.
+            cp -r $CARP/* .
           fi
           ls -la
       - name: Preparar Java
