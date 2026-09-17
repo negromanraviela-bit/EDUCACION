@@ -26,6 +26,22 @@ jobs:
       - name: Crear APK
         run: |
           chmod +x gradlew
+      - name: Crear APK
+        run: |
+          GRADLEW=$(find . -type f -name "gradlew" -print -quit)
+
+          if [ -z "$GRADLEW" ]; then
+            echo "ERROR: No se encontró gradlew"
+            find . -maxdepth 4 -type f | sort
+            exit 1
+          fi
+
+          echo "Gradlew encontrado en: $GRADLEW"
+
+          ROOT=$(dirname "$GRADLEW")
+          chmod +x "$GRADLEW"
+
+          cd "$ROOT"
           ./gradlew assembleDebug
 
       - name: Guardar APK
