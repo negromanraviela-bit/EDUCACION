@@ -23,24 +23,44 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Crear APK
-        run: |
-          chmod +x gradlew
-      - name: Crear APK
-        run: |
-          GRADLEW=$(find . -type f -name "gradlew" -print -quit)
+      name: Crear APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Descomprimir ZIP
+        run: |
+          ZIP=$(find. -name "*.zip" | head -n 1)
+          echo "ZIP encontrado: $ZIP"
+          if [ -n "$ZIP" ]; then
+            unzip -o "$ZIP" -d.
+            rm -f "$ZIP"
+          fi
+          echo "---- LISTA DE ARCHIVOS ----"
+          ls -R
+          echo "---------------------------"
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Crear APK
+        run: |
+          GRADLEW=$(find . -type f -name "gradlew" | head -n 1)
+          echo "Buscando gradlew..."
+          echo "Encontrado en: $GRADLEW"
           if [ -z "$GRADLEW" ]; then
-            echo "ERROR: No se encontró gradlew"
-            find . -maxdepth 4 -type f | sort
+            echo "NO SE ENCONTRO gradlew, estas son las carpetas:"
+            find . -type d | head -n 50
             exit 1
           fi
-
-          echo "Gradlew encontrado en: $GRADLEW"
-
           ROOT=$(dirname "$GRADLEW")
           chmod +x "$GRADLEW"
-
           cd "$ROOT"
           ./gradlew assembleDebug
 
@@ -48,4 +68,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: APK-Educacion-Fisica
-          path: app/build/outputs/apk/debug/*. apk
+          path: "**/build/outputs/apk/debug/*.apk"
