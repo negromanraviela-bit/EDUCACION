@@ -25,10 +25,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
       - name: Crear APK
         run: |
           chmod +x gradlew
-         ./gradlew assembleDebug
+          ./gradlew assembleDebug
+
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
