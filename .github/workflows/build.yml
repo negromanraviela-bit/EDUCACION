@@ -16,8 +16,8 @@ jobs:
             CARP="."
           fi
           echo "Moviendo desde $CARP"
-          if [ "$CARP"!= "." ]; then
-            cp -r $CARP/*.
+          if [ "$CARP" != "." ]; then
+            cp -r $CARP/* .
           fi
           ls -la
       - name: Preparar Java
